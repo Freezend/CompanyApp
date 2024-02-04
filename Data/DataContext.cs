@@ -2,9 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyApp.Data {
-	public class DataContext : DbContext {
-		public DataContext(DbContextOptions<DataContext> options) : base(options) {}
-
+	public class DataContext(DbContextOptions<DataContext> options) : DbContext(options) {
 		public DbSet<Client> Clients { get; set; }
 		public DbSet<Company> Companies { get; set; }
         public DbSet<Employee> Employees { get; set; }

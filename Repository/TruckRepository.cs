@@ -4,11 +4,8 @@ using CompanyApp.Interfaces;
 using CompanyApp.Models;
 
 namespace CompanyApp.Repository {
-	public class TruckRepository : ITruckRepository {
-		private readonly DataContext _context;
-		public TruckRepository(DataContext context) {
-			_context = context;
-		}
+	public class TruckRepository(DataContext context) : ITruckRepository {
+		private readonly DataContext _context = context;
 
 		public ICollection<Truck> GetTrucks() {
 			return _context.Trucks.OrderBy(t => t.Id).ToList();
@@ -17,33 +14,16 @@ namespace CompanyApp.Repository {
 		public ICollection<Truck> GetTrucks(string sort) {
 			var trucks = _context.Trucks.AsQueryable();
 
-			switch (sort.ToLowerInvariant()) {
-				case "-id":
-					trucks = trucks.OrderByDescending(t => t.Id);
-					break;
-				case "code":
-					trucks = trucks.OrderBy(t => t.Code);
-					break;
-				case "-code":
-					trucks = trucks.OrderByDescending(t => t.Code);
-					break;
-				case "name":
-					trucks = trucks.OrderBy(t => t.Name);
-					break;
-				case "-name":
-					trucks = trucks.OrderByDescending(t => t.Name);
-					break;
-				case "status":
-					trucks = trucks.OrderBy(t => t.Status);
-					break;
-				case "-status":
-					trucks = trucks.OrderByDescending(t => t.Status);
-					break;
-				default:
-					trucks = trucks.OrderBy(t => t.Id);
-					break;
-			}
-
+			trucks = sort.ToLowerInvariant() switch {
+				"-id" => trucks.OrderByDescending(t => t.Id),
+				"code" => trucks.OrderBy(t => t.Code),
+				"-code" => trucks.OrderByDescending(t => t.Code),
+				"name" => trucks.OrderBy(t => t.Name),
+				"-name" => trucks.OrderByDescending(t => t.Name),
+				"status" => trucks.OrderBy(t => t.Status),
+				"-status" => trucks.OrderByDescending(t => t.Status),
+				_ => trucks.OrderBy(t => t.Id),
+			};
 			return trucks.ToList();
 		}
 
