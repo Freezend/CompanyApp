@@ -3,19 +3,13 @@ using CompanyApp.DTO;
 using CompanyApp.Interfaces;
 using CompanyApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace CompanyApp.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class TrucksController : Controller {
-		private readonly ITruckRepository _truckRepository;
-		private readonly IMapper _mapper;
-
-		public TrucksController(ITruckRepository truckRepository, IMapper mapper) {
-			_truckRepository = truckRepository;
-			_mapper = mapper;
-		}
+	public class TrucksController(ITruckRepository truckRepository, IMapper mapper) : Controller {
+		private readonly ITruckRepository _truckRepository = truckRepository;
+		private readonly IMapper _mapper = mapper;
 
 		[HttpGet]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<Truck>))]
@@ -109,7 +103,7 @@ namespace CompanyApp.Controllers {
 
 			truckCreate.Code = truckCreate.Code.Trim();
 			var truck = _truckRepository.GetTrucks()
-				.Where(t => t.Code.ToLower() == truckCreate.Code.ToLower())
+				.Where(t => t.Code.Equals(truckCreate.Code, StringComparison.CurrentCultureIgnoreCase))
 				.FirstOrDefault();
 			if (truck != null) {
 				ModelState.AddModelError("errorCode", "Truck with the specified code already exists.");
