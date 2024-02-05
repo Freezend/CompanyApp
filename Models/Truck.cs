@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Extensions;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CompanyApp.Models {
 	public enum TruckStatus {
@@ -28,6 +29,7 @@ namespace CompanyApp.Models {
 		public required TruckStatus Status { get; set; }
 		[StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
 		public string? Description { get; set; }
+		[JsonIgnore]
 		public Company? Company { get; set; }
 		public string GetStatusAsString() {
 			return Status.GetAttributeOfType<DisplayAttribute>().Name ?? "";
